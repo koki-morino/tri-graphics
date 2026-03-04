@@ -1,0 +1,50 @@
+cmake_minimum_required(VERSION 3.25)
+
+project(gfx-gles C CXX)
+
+set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+set(SDL_OPENGL OFF CACHE BOOL "" FORCE)
+set(SDL_RENDER_D3D OFF CACHE BOOL "" FORCE)
+set(SDL_RENDER_D3D11 OFF CACHE BOOL "" FORCE)
+set(SDL_RENDER_D3D12 OFF CACHE BOOL "" FORCE)
+set(SDL_RENDER_GPU OFF CACHE BOOL "" FORCE)
+set(SDL_RENDER_METAL OFF CACHE BOOL "" FORCE)
+set(SDL_RENDER_VULKAN OFF CACHE BOOL "" FORCE)
+set(SDL_VULKAN OFF CACHE BOOL "" FORCE)
+add_subdirectory(external/SDL)
+
+# use stb_image instead of SDL_image that takes a long time to clone
+# set(SDLIMAGE_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+# set(SDLIMAGE_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+# set(SDLIMAGE_AVIF OFF CACHE BOOL "" FORCE)
+# set(SDLIMAGE_JXL  OFF CACHE BOOL "" FORCE)
+# set(SDLIMAGE_WEBP OFF CACHE BOOL "" FORCE)
+# set(SDLIMAGE_VENDORED ON CACHE BOOL "" FORCE)
+# add_subdirectory(external/SDL_image)
+
+set(SDLTTF_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(SDLTTF_VENDORED ON CACHE BOOL "" FORCE)
+add_subdirectory(external/SDL_ttf)
+
+find_package(OpenGL REQUIRED COMPONENTS GLES2)
+
+add_executable(${PROJECT_NAME}
+    src/main.cpp
+)
+
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/external/stb
+    OpenGL::GLES2
+)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    OpenGL::GLES2
+    SDL3::SDL3
+    # SDL3_image::SDL3_image
+    SDL3_ttf::SDL3_ttf
+)
